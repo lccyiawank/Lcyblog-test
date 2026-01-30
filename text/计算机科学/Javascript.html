@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <base href="file:///C:/Users/19631/Desktop/Lcyblog.site/" target="_blank">
+        <link rel="icon" href="image/390742.png" />
+        <link rel="stylesheet" href="init.css">
+        <title>刘超轶的博客 计算机科学</title>
+        <style>
+        </style>
+    </head>
+    <!--&gt;&lt;-->
+    <body>
+        <div class="box1">
+            <h1>Javascript</h1>
+        </div>
+        <div class="box2">
+            <p>声明/初始化：
+                <ul>
+                    <li>
+                        let name_of_variable1 = 1
+                    </li>
+                    <li>
+                        var name_of_variable2 = "this is a variable"
+                    </li>
+                </ul>
+            </p>
+            <p>i/o：
+                <ul>
+                    <li>
+                        window.document.write(name_of_variable)
+                    </li>
+                    <li>
+                        <p>人机交互：</p>
+                        <button id= "dzs2" onclick="dianzan2()">0</button>
+                        <script>
+                            function dianzan2(){
+                                let dianzanshubiaoqian = window.document.getElementById('dzs2'); 
+                                let dianzanshu = parseInt(dianzanshubiaoqian.innerText);
+                                dianzanshubiaoqian.innerText = dianzanshu+1;
+                            }
+                        </script>
+                        <p>getelimentbyid是通过id获取该标签的意思，用innerText获取其内容即字符0，用parseint转化为int数字0，在每次点击时触发dianzan函数</p>
+                    </li>
+                    <li>
+                        <button><a href="https://www.bilibili.com/">bilibili</a></button>
+                        <p>点击跳转</p>
+                    </li>
+                    <li>
+                        <p>更复杂的点赞函数，包含数据库</p>
+                        <button id='dzs' onclick="dianzan()">0</button>
+                    <script>
+                        let db;
+                        const dbName = 'myDatabase';
+                        const storeName = 'likes';
+                        const key = 1; // 固定的键，用于存储点赞数
+
+                        // 打开或创建数据库
+                        const request = indexedDB.open(dbName, 1);
+        
+                        request.onupgradeneeded = function(event) {
+                        db = event.target.result;
+                        // 创建对象存储空间，如果不存在的话
+                        if (!db.objectStoreNames.contains(storeName)) {
+                            const objectStore = db.createObjectStore(storeName, { keyPath: 'id' });
+                        // 初始化点赞数为0
+                            objectStore.add({ id: key, count: 0 });
+                          }
+                        };
+
+                        request.onsuccess = function(event) {
+                        db = event.target.result;
+                        console.log('数据库打开成功');
+                        // 加载当前的点赞数
+                        loadLikeCount();
+                        };
+
+                        request.onerror = function(event) {
+                        console.error('数据库打开失败:', event.target.error);
+                        };
+
+                          // 加载点赞数
+                          function loadLikeCount() {
+                         const transaction = db.transaction([storeName], 'readonly');
+                             const objectStore = transaction.objectStore(storeName);
+                         const request = objectStore.get(key);
+            
+                           request.onsuccess = function(event) {
+                            const data = event.target.result;
+                           if (data) {
+                               document.getElementById('dzs').textContent = data.count;
+                              }
+                          };
+            
+                           request.onerror = function(event) {
+                           console.error('读取数据失败:', event.target.error);
+                         };
+                          }
+
+                          // 点赞函数
+                           function dianzan() {
+                         const transaction = db.transaction([storeName], 'readwrite');
+                         const objectStore = transaction.objectStore(storeName);
+            
+                            // 先获取当前值
+                          const getRequest = objectStore.get(key);
+            
+                           getRequest.onsuccess = function(event) {
+                            const data = event.target.result || { id: key, count: 0 };
+                
+                          // 增加点赞数
+                            data.count++;
+                
+                        // 更新数据
+                              const updateRequest = objectStore.put(data);
+                
+                         updateRequest.onsuccess = function() {
+                         // 更新按钮显示
+                             document.getElementById('dzs').textContent = data.count;
+                             console.log('点赞成功，当前点赞数:', data.count);
+                         };
+                
+                         updateRequest.onerror = function(event) {
+                               console.error('更新数据失败:', event.target.error);
+                          };
+                         };
+
+                         getRequest.onerror = function(event) {
+                            console.error('读取数据失败:', event.target.error);
+                         };
+
+                        transaction.oncomplete = function() {
+                           console.log('事务完成');
+                        };
+                        }
+                    </script>
+                    </li>
+                </ul>
+            </p>
+            <p>自定义函数：funtion name(param1,param2,...){...具体内容...}</p>
+            <p>视频blob：</p>
+                <!--作者：广州少儿编程私教
+                链接：https://www.zhihu.com/question/446432610/answer/1750915602
+                来源：知乎
+                著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+                -->
+            <video src="" controls></video>
+                <script>
+                    fetch('https://ok.166.net/gameyw-misc/opd/squash/20210226/134206-krb0sf3j14.mp4')
+                    .then(res => res.blob())//接受res输入，讲res转换为blob格式
+                    .then(res => { //接受blob格式的res输入，创建一个格式如blob:https://example.com/的临时本地URL，找到页面中第一个<video>将其src元素设置为刚才创立的blob URL
+                        const src = URL.createObjectURL(res); 
+                        document.querySelector('video').src = src;
+                    })
+                    .catch(error => console.error('视频加载失败:', error));
+                </script>
+            <p>箭头函数=&gt;：把const squa = function getSqua(x){return = x*x}变成const squa = x => x*x;</p>
+        </div>
+        <div class="box1">
+            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
+        </div>
+    </body>
+</html>

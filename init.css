@@ -1,0 +1,18 @@
+            .box1{
+                background-color: #f1f1f1;
+                text-align: center;
+                padding: 40px;
+            }
+            .box2{
+                width: auto;
+                margin: auto 200px;
+                padding: 20px;
+                line-height: 1.7;
+            }
+            .background1 {
+            background-image: url('image/1245646.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            backdrop-filter: blur(1.5px)
+        }
