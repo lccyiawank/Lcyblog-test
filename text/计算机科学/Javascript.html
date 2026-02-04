@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <base href="http://localhost:8000" target="_blank">
+        <link rel="icon" href="image/390742.png" />
+        <link rel="stylesheet" href="init.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>刘超轶的博客 计算机科学</title>
+        <style>
+        </style>
+    </head>
+    <!--&gt;&lt;-->
+    <body>
+        <div class="box1">
+            <h1>Javascript</h1>
+            <a href="../index.html">返回索引页</a>
+        </div>
+        <div class="box2">
+            <p>声明/初始化：
+                <ul>
+                    <li>
+                        let name_of_variable1 = 1
+                    </li>
+                    <li>
+                        var name_of_variable2 = "this is a variable"
+                    </li>
+                </ul>
+            </p>
+            <p>i/o：
+                <ul>
+                    <li>
+                        window.document.write(name_of_variable)
+                    </li>
+                    <li>
+                        <p>人机交互：</p>
+                        <button id= "dzs2" onclick="dianzan2()">0</button>
+                        <script>
+                            function dianzan2(){
+                                let dianzanshubiaoqian = window.document.getElementById('dzs2'); 
+                                let dianzanshu = parseInt(dianzanshubiaoqian.innerText);
+                                dianzanshubiaoqian.innerText = dianzanshu+1;
+                            }
+                        </script>
+                        <p>getelimentbyid是通过id获取该标签的意思，用innerText获取其内容即字符0，用parseint转化为int数字0，在每次点击时触发dianzan函数</p>
+                    </li>
+                    <li>
+                        <button><a href="https://www.bilibili.com/">bilibili</a></button>
+                        <p>点击跳转</p>
+                    </li>
+                    <li>
+                        <p id="説明"></p>
+                        <button id='dzs' onclick="dianzan()">0</button>
+                    <script>
+                        const shuoming = "更复杂的点赞函数，包含数据库";
+                        document.getElementById('説明').textContent = shuoming;
+
+                        let db;
+                        const dbName = 'myDatabase';
+                        const storeName = 'likes';
+                        const key = 1; // 固定的键，用于存储点赞数
+
+                        // 打开或创建数据库
+                        const request = indexedDB.open(dbName, 1);//indexedDB.open接受两个参数，第一个是数据库名称，第二个是数据库的版本号（整数）。以后修改数据库结构增加版本号，就会触发onupgradeneeded。
+                        //indexedDB.open返回一个IDBOpenDBRequest对象，这是一个异步操作，需要通过事件监听来处理，也就是request.xxxx这样的函数。
+                        
+                        //只有事件监听对象返回event对象
+
+                        request.onupgradeneeded = function(event) {
+                        console.log('2. onupgradeneeded 被调用');
+                        console.log('   Event 对象类型:', event.constructor.name);
+                        console.log('   oldVersion:', event.oldVersion);
+                        console.log('   newVersion:', event.newVersion);
+                        //当触发该函数时，浏览器创造一个event对象并设置相关信息，这里的event.target.result是我们唯一获得数据库的方式
+                        db = event.target.result;
+                        console.log('   数据库对象:', db.name); 
+                        console.log('   数据库版本:', db.version); 
+                        // 创建对象存储空间，如果不存在的话
+                        // 检查storeName是否存在，避免重复创建
+                        // keyPath：'id'指定id作为主键，则每条记录必须包括id。
+                        if (!db.objectStoreNames.contains(storeName)) {
+                            const objectStore = db.createObjectStore(storeName, { keyPath: 'id' });
+                        // 初始化点赞数为0
+                            objectStore.add({ id: key, count: 0 });
+                        // objectStore.add向表中增加一个记录，包括了主键值id:key（这里key是1）和一个数据内容，称作count。
+                            }
+                        };
+
+                        request.onsuccess = function(event) {
+                        console.log('3. onsuccess 被调用');
+                        db = event.target.result;
+                        console.log('数据库打开成功');
+                        // 加载当前的点赞数
+                        loadLikeCount();
+                        };
+
+                        request.onerror = function(event) {
+                        console.error('数据库打开失败:', event.target.error);
+                        };
+
+                          // 加载点赞数
+                        function loadLikeCount() {
+                            const transaction = db.transaction([storeName], 'readonly');
+                            console.log('事务已创建:', transaction.mode);
+                            const objectStore = transaction.objectStore(storeName);
+                            console.log('对象存储空间:', objectStore.name);
+                            const request = objectStore.get(key);
+                            console.log('查询请求已发送');
+                        //db.transaction创造一个数据库事务，这里用数组，表示可以包含多个表名，例如[aaa,bbb]。readonly和readwrite是两个options。
+                        //objectStore获取对象存储空间
+                        //get，根据key获取对应值
+            
+                        request.onsuccess = function(event) {
+                            const data = event.target.result;
+                            console.log('查询成功，数据:', data);
+                            //event.target.result就是我们request的对象
+
+                            if (data) {
+                                document.getElementById('dzs').textContent = data.count;
+                            }
+                        };
+            
+                           request.onerror = function(event) {
+                           console.error('读取数据失败:', event.target.error);
+                         };
+                          }
+
+                          // 点赞函数
+                            function dianzan() {
+                         const transaction = db.transaction([storeName], 'readwrite');
+                         const objectStore = transaction.objectStore(storeName);
+            
+                            // 先获取当前值
+                         const getRequest = objectStore.get(key);
+            
+                         getRequest.onsuccess = function(event) {
+                            const data = event.target.result || { id: key, count: 0 };
+                         // ||表示或者。目的是用于在查询不存在的id是返回0（这里的count：0）
+                
+                         // 增加点赞数
+                            data.count++;
+                
+                         // 更新数据，使用put函数
+                            const updateRequest = objectStore.put(data);
+                        
+                         updateRequest.onsuccess = function() {
+                         // 更新按钮显示
+                             document.getElementById('dzs').textContent = data.count;
+                             console.log('点赞成功，当前点赞数:', data.count);
+                         };
+                
+                         updateRequest.onerror = function(event) {
+                               console.error('更新数据失败:', event.target.error);
+                          };
+                         };
+
+                         getRequest.onerror = function(event) {
+                            console.error('读取数据失败:', event.target.error);
+                         };
+
+                         transaction.oncomplete = function() {
+                           console.log('事务完成');
+                        };
+                        }
+                    </script>
+                    </li>
+                </ul>
+            </p>
+            <p>自定义函数：funtion name(param1,param2,...){...具体内容...}</p>
+            <p>视频blob：</p>
+                <!--作者：广州少儿编程私教
+                链接：https://www.zhihu.com/question/446432610/answer/1750915602
+                来源：知乎
+                著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+                -->
+            <video src="" controls></video>
+                <script>
+                    fetch('http://localhost:8888/proxy/ok.166.net/gameyw-misc/opd/squash/20210226/134206-krb0sf3j14.mp4')
+                    .then(res => res.blob())//接受res输入，讲res转换为blob格式
+                    .then(res => { //接受blob格式的res输入，创建一个格式如blob:https://example.com/的临时本地URL，找到页面中第一个<video>将其src元素设置为刚才创立的blob URL
+                        const src = URL.createObjectURL(res); 
+                        document.querySelector('video').src = src;
+                    })
+                    //
+                    .catch(error => console.error('视频加载失败:', error));
+                </script>
+    <!--//封装函数
+        function createAndUseBlobUrl(blob, callback) {
+        const url = URL.createObjectURL(blob);
+    
+        try {
+        callback(url);
+        } finally {
+        // 清理URL
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+        }
+    }
+
+// 使用
+createAndUseBlobUrl(blob, (url) => {
+  img.src = url;
+});-->
+
+            <p>箭头函数=&gt;：把const squa = function getSqua(x){return = x*x}变成const squa = x => x*x;</p>
+            <p>fetch函数：</p>
+            <p>fetch：
+                语法：
+                fetch(url,options) 发起请求，返回promise对象
+                .then(res =>{}) 链式传递数据
+                .then(...)
+                .catch(error =>{}) 任何一步出错都跳转到这里
+            </p>
+            <p>
+                例1用于获取文本：
+                fetch('./test_text.txt')
+                .then(response => {
+                console.log(response.status); // HTTP状态码
+                console.log(response.ok);     // 是否成功（200-299）
+                // 将响应体转换为文本
+                return response.text();
+                })
+                .then(text => {
+                // 第二个then：处理转换后的文本数据
+                console.log('获取到的文本：', text);
+                document.getElementById('content').textContent = text;
+                })
+                .catch(error => {
+                console.error('请求失败：', error);
+                });
+            </p>
+            <p>这一段测试用fetch来fetch某个网页的文本</p>
+            <p id="test_text_1"></p>
+            <script>
+                fetch('../test_text.txt')
+                .then(response => {
+                console.log(response.status); // HTTP状态码
+                console.log(response.ok);     // 是否成功（200-299）
+                // 将响应体转换为文本，如果不转成文本就是乱码
+                return response.text();
+                })
+                .then(text => {
+                // 第二个then：处理转换后的文本数据
+                console.log('获取到的文本：', text);
+                document.getElementById('test_text_1').textContent = text;
+                })
+                .catch(error => {
+                console.error('请求失败：', error);
+                });
+
+            </script>
+
+            <ul>查找函数：
+                <li>
+                    querySelector：能查找复杂功能。<br>
+                    例如：const div = document.queryselector('div')//查找第一个标签为div的元素
+                    const id_name = document.queryselector('#id_name')//查找id为id_name的元素
+                    const submitBtn = document.querySelector('#myForm .btn btn-light')//查找id为myForm里边class为btn btn-light的元素
+                    还能查找很多东西。。。
+                </li>
+                <li>
+                    getElementById：比queryselector的性能好。
+                </li>
+            </ul>
+            
+            <p id="name_of_表单"></p>
+            <script>
+                let text = '下面讲述表单form'
+                document.querySelector('#name_of_表单').textContent = text
+            </script>
+            <form id="myForm">
+                <div>
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required 
+                    placeholder="请输入用户名" minlength="3" maxlength="20" >
+                    
+                    <label for='email'>邮箱</label>
+                    <input type="email" id='email' name="email"  required 
+                    placeholder="请输入邮箱" minlength="3" maxlength="20">
+                    
+                    <label for='password'>密码</label>
+                    <input type="password" id='password' name="password"  required
+                    placeholder="请输入密码" minlength="3" maxlength="20"  oninput="validatePassword()">
+                    <span id="passwordError"></span>
+
+                    <label for="confirm">确认密码:</label>
+                    <input type="password" id="confirm" name="confirm"
+                    required oninput="validatePassword()">
+
+                    <label>性别</label>
+                    <label><input type="radio" name="gender" value="male" checked> 男</label>
+                    <label><input type="radio" name="gender" value="female"> 女</label>
+ <!--这是另一种写法，把label放里边。-->
+                        
+                    <label>爱好</label>
+                    <label><input type="checkbox" name="hobbies" value="reading"> 阅读</label>
+                    <label><input type="checkbox" name="hobbies" value="music"> 音乐</label>
+                    
+                          <label for="birthday">生日:</label>
+      <input type="date" id="birthday" name="birthday"
+             max="2024-12-31">
+
+                    <button type="submit" class="btn btn-light">提交</button>
+                    <input type="reset" value="重置">
+                </div>
+                <br>
+                <div>
+                    <p>注释：</p>
+                    <p>这里input需要id和name，name作为表单里的index key。</p>
+                    <p>label的for指向的是id。所以可以说id用于前端操作，name用于后端处理。</p>
+                    <p>这里button有三种预设的type分别是button、reset、submit，class提供了一些预设的css，但是要引入Bootstrap CSS</p>
+                    <p>引入方法是在头文件里边link这个https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css</p>
+                    <p>这里演示了三种获取myForm里边元素的方法，分别是用type、name和class。除了用queryselector，也可以用getelementbyid。</p>
+                    <p>获取元素后就可以监听submit，用addeventlistener，addeventlistener有两个参数，第一个是监听该参数的方式，第二个是当监听到时发生的函数。</p>
+                    <p>验证输入是否正确要用正则表达式</p>
+                    <p>获取整个表单来上传它，用fetch来上次，fetch的method有get获取和post上传，可以用formData自动获取，也可以手动获取。</p>
+                    <p>手动获取的方式是data={index_key:id_name.value,...,...,...};</p>
+                    <p>this就是那个处理的对象，不知道this是什么就console.log(this)看一下就好了</p>
+                    <p>要校验输入的对错，在这里span就有用了。。虽然span在一般意义上就是一个特殊的字符框</p>
+                    <p>required是意思是要求提交这个才能提交表单</p>
+                </div>
+            </form>
+            <script>
+  // 获取表单元素
+      function validatePassword() {
+        alert("www")
+      const password = document.getElementById('password');
+      const confirm = document.getElementById('confirm');
+      const error = document.getElementById('passwordError');
+      
+      if (password.value !== confirm.value) {
+        confirm.setCustomValidity('两次密码不一致');
+        error.textContent = '两次密码不一致';
+      } else {
+        confirm.setCustomValidity('');
+        error.textContent = '';
+      }
+    }
+             const form = document.querySelector('#myForm');
+
+             const usernameInput = document.querySelector('#myForm input[name="username"]');
+             const emailInput = document.querySelector('#myForm input[type="email"]');
+             const passwordInput = document.querySelector('#myForm input[type="password"]');
+             const submitBtn = document.querySelector('#myForm .btn btn-light');
+
+ //监听
+             usernameInput.addEventListener('input', function(e) {
+                 e.preventDefault();
+                 if (this.value.length < 3) {
+                     this.style.borderColor = 'red';
+                 } else {
+                     this.style.borderColor = 'green';
+                 }
+                });
+ //提交到服务器
+             form.addEventListener('submit',function(e){
+                e.preventDefault();
+
+                if (!this.checkValidity()) {
+                    alert('请正确填写所有字段');
+                    return;
+                }
+
+                const formData = new FormData(this)
+
+                fetch('',{
+                    method:'POST',
+                    body:formData
+                })
+                .then(res =>{
+                    alert('LOGした');
+                    this.reset();
+                });
+
+             })
+                
+
+            </script>
+
+            <p>
+                临时插入一条使用本地服务器的方式：下载python，在对应文件夹输入cmd，在cmd中输入python -m http.server 8000，就能在http://localhost:8000/加载文件，这是出于fetch的安全性考虑的
+                但是浏览器出于安全考虑会禁止访问域外资源，简单的方法是使用代理服务器。第一种是在本地搭一个代理服务器，另一种是使用已有的代理服务器。
+                在本地搭建服务器参考python_server.py，他在端口8888开启一个服务器。
+                例如：<br>
+                const videoUrl = 'https://ok.166.net/gameyw-misc/opd/squash/20210226/134206-krb0sf3j14.mp4';<br>
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/${videoUrl}';
+            </p>
+
+
+        </div>
+        <div class="box1">
+            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
+        </div>
+    </body>
+</html>

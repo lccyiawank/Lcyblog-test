@@ -1,0 +1,43 @@
+    .box1{
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 40px;
+}
+    .box2{
+    width: auto;
+    margin: auto 200px;
+    padding: 20px;
+    line-height: 1.7;
+}
+    .background1 {
+    background-image: url('image/1245646.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    backdrop-filter: blur(1.5px)
+}
+    .BACK{
+    text-align: center;
+    display: block;
+    padding: 12px;
+    border: 1px dashed #eee;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 32px;
+    margin-top: -1px;
+}
+.BACK a{
+    display:block;
+    color:#999;
+    font-weight:200;
+    text-decoration:none;
+}
+.BACK a:hover{
+    color:#f40;
+}
+a {
+    text-decoration: none;
+}
+a:hover{
+    color:#f40;
+}

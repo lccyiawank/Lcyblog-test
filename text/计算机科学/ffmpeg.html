@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <base href="http://localhost:8000" target="_blank">
+        <link rel="icon" href="image/390742.png" />
+        <link rel="stylesheet" href="init.css">
+        <title>刘超轶的博客 计算机科学</title>
+        <style>
+            
+        </style>
+    </head>
+    <body>
+        <div class="box1">
+            <h1>ffmpeg</h1>
+        </div>
+        <div class="box2">
+            <p>安装方法：参考<a href="https://blog.csdn.net/qq_34707272/article/details/148159336">Windows 安装 FFmpeg 新手教程（附环境变量配置）</a>在<a href="https://ffmpeg.org/">ffmpeg官网</a>找到<a href="https://github.com/BtbN/FFmpeg-Builds/releases">下载界面</a>下载上个月的稳定版本。找到对应系统的四个版本（例如win64有gpl、lgpl以及两个shared版本），其中shared版本是给开放者的，lgpl版本有更宽松的知识协议。</p>
+            <p>系统变量：在系统变量中配置解压后文件的bin路径即可，注意系统变量配置需要关闭全部页面才可成功。</p>
+            <p>powershell：如果你不想用cmd，可以用<a href="https://learn.microsoft.com/zh-cn/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.5">powershell</a></p>
+            <p>确认安装：win+R打开cmd或powershell，输入ffmpeg -version确认是否安装成功</p>
+            <p>使用方法：</p>
+            <ul>
+                <li>
+                    查看信息：ffprobe "input.mp4"
+                </li>
+                <li>
+                    放缩：ffmpeg -i "input.mp4" -vf "scale:1920:1080" "output.mp4" //其中input.mp4指向输入文件的路径，output是输出文件的地址、格式和名称。
+                </li>
+                <li>
+                    下载m3u8：ffmpeg -i "xxx.m3u8" "output.mp4"
+                </li>
+                <li>
+                    参考：
+                    <ul>
+                    <li>
+                        <a href="https://zhuanlan.zhihu.com/p/687238796">FFmpeg 修改媒体文件输出路径！(有点意思)</a>
+                    </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="box1">
+            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
+        </div>
+    </body>
+</html>
