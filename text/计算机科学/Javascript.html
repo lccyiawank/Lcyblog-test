@@ -379,6 +379,7 @@ createAndUseBlobUrl(blob, (url) => {
 
             <p>
                 临时插入一条使用本地服务器的方式：下载python，在对应文件夹输入cmd，在cmd中输入python -m http.server 8000，就能在http://localhost:8000/加载文件，这是出于fetch的安全性考虑的
+                这时候直接方位localhost:8000即可，不需要再在本地打开文件
                 但是浏览器出于安全考虑会禁止访问域外资源，简单的方法是使用代理服务器。第一种是在本地搭一个代理服务器，另一种是使用已有的代理服务器。
                 在本地搭建服务器参考python_server.py，他在端口8888开启一个服务器。
                 例如：<br>
