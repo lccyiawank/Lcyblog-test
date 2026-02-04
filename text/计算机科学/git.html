@@ -3,14 +3,14 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-        <base href="https://lccyiawank.github.io/Lcyblog-test/" target="_blank">
-        <link rel="icon" href="image/390742.png" />
-        <link rel="stylesheet" href="init.css">
+        <base target="_blank">
+        <link rel="icon" href="../../image/390742.png" />
+        <link rel="stylesheet" href="../../init.css">
         <title>刘超轶的博客 计算机科学</title>
         <style>
         </style>
     </head>
-    <body class="background1">
+    <body>
         <div class="box1">
             <h1>git</h1>
         </div>
@@ -27,48 +27,48 @@
                         git config --global user.name "你的名字"
                     </li>
                     <li>
-                        关联github pages：
-                        cd /../project
-                        // 路径
-
-                        git init
-                        // 初始化
-
-                        在对应仓库的code获取.git的地址
-                        git remote add origin https://github.com/用户名/仓库名.git
-                        // 关联远程仓库
-
-                        git remote -v
-                        // 检查是否关联
-                        // 应该显示类似：
-                        // origin  https://github.com/用户名/仓库名.git (fetch)
-                        // origin  https://github.com/用户名/仓库名.git (push)
-
-                        git fetch origin
-                        // 拉取仓库
-
-                        git branch
-                        // 查看分支
-
-                        git branch -M main
-                        // 如果本地分支叫做master，那么重命名本地分支
-
-                        git push -u origin master:main
-                        // 或者把本地的master推送到main
-
-                        git checkout -b main origin/main
-                        git merge master
-                        git branch -d master
-                        // 或者在本地创建main且追踪远程仓库并合并master
-
-                        git add .
-                        // 单独一个点指的是所有文件，或者你也可以add某个文件
-
-                        git commit -m "合并初始化文件"
-                        // 更改说明
-
-                        git push origin main
-                        // 推送到github
+                        关联github pages：<br>
+                        cd /../project <br>
+                        // 路径 <br>
+<br>
+                        git init<br>
+                        // 初始化<br>
+<br>
+                        在对应仓库的code获取.git的地址<br>
+                        git remote add origin https://github.com/用户名/仓库名.git<br>
+                        // 关联远程仓库<br>
+<br>
+                        git remote -v<br>
+                        // 检查是否关联<br>
+                        // 应该显示类似：<br>
+                        // origin  https://github.com/用户名/仓库名.git (fetch)<br>
+                        // origin  https://github.com/用户名/仓库名.git (push)<br>
+<br>
+                        git fetch origin<br>
+                        // 拉取仓库<br>
+<br>
+                        git branch<br>
+                        // 查看分支<br>
+<br>
+                        git branch -M main<br>
+                        // 如果本地分支叫做master，那么重命名本地分支<br>
+<br>
+                        git push -u origin master:main<br>
+                        // 或者把本地的master推送到main<br>
+<br>
+                        git checkout -b main origin/main<br>
+                        git merge master<br>
+                        git branch -d master<br>
+                        // 或者在本地创建main且追踪远程仓库并合并master<br>
+<br>
+                        git add .<br>
+                        // 单独一个点指的是所有文件，或者你也可以add某个文件<br>
+<br>
+                        git commit -m "合并初始化文件"<br>
+                        // 更改说明<br>
+<br>
+                        git push origin main<br>
+                        // 推送到github<br>
                     </li>
                 </li>
             </ul>
