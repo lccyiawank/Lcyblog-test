@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--作者：广州少儿编程私教
 链接：https://www.zhihu.com/question/446432610/answer/1750915602
 来源：知乎
@@ -25,4 +26,33 @@
       })
   </script>
 </body>
+=======
+<!--作者：广州少儿编程私教
+链接：https://www.zhihu.com/question/446432610/answer/1750915602
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test blob</title>
+</head>
+<body>
+  <video src="" controls></video>
+  <script>
+      fetch('https://ok.166.net/gameyw-misc/opd/squash/20210226/134206-krb0sf3j14.mp4', {
+        method: 'get',
+        responseType: 'blob'  
+      })
+      .then(res => res.blob())
+      .then(res => {
+        const src = URL.createObjectURL(res); 
+        document.querySelector('video').src = src;
+      })
+  </script>
+</body>
+>>>>>>> 40d6844ad3ca79986123b06b3edadfe846c7ee42
 </html>
