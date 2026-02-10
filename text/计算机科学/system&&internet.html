@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <base target="_blank">
+        <link rel="icon" href="../../image/390742.png" />
+        <link rel="stylesheet" href="../../init.css">
+        <title>刘超轶的博客 计算机科学</title>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div class="box1">
+            <h1>系统</h1>
+        </div>
+        <div class="box2">
+            <p>打开控制台：win+r</p>
+            <p>增加系统变量：在控制台输入sysdm.cpl，在环境变量中增加路径。</p>
+            <p>查看ip地址：</p>
+            <p>查看私有ip，在控制台输入ipconfig；查看公网ip，在powershell输入nslookup myip.opendns.com resolver1.opendns.com或者在浏览器https://ipinfo.io查看或者在路由器管理页面查询192.168.1.1 或 192.168.0.1。
+                查看手机ip在对应wifi中查看。
+            </p>
+            <p>什么是内网穿透(NAT穿透)？<br>
+                由于家庭网络使用私有ip地址，无法从公网直接访问。内网穿透通过中间服务器在公网和内网之间建立“隧道”转发流量。</p>
+            <p>什么是私有ip和公网ip？</p>
+            <p>公网ip由互联网服务提供商（电信、联通、移动..）分配，可以被互联网上的任何设备直接访问，每个公网ip在全球中是唯一的。
+                由于ipv4稀少，所以不是每个人都有公网ip。</p>
+            <p>私有ip仅在局域网（LAN）中有效，不能直接访问互联网，需要经过路由器进行网络地址转换NAT才能访问，
+                设备发送请求到路由器，路由器将私有ip映射到公网ip来请求公网服务器并转发到对应设备。
+                私有ip在局域网内唯一。</p>
+            <p>什么是局域网（LAN）？就是一定区域内连接多台设备的私有网络。</p>
+            <p>什么是子网掩码？子网掩码决定了私有ip的规模以及判断两个设备是否处于同一个子网。子网掩码也用CIDR表示法来表示，例如192.168.1.1/24，后边的数字表示1的数量。
+                对于接入很多设备的网络来说，可以通过子网掩码来分割网络。例如掩码为/25（255.255.255.128），那么ip在0-127和128-255各自在一个子网中。
+            </p>
+            <p>什么是网关？网关就是局域网访问公网或者不同子网的出口。网关必须与设备在同一个子网。局域网所有设备共享一个网关ip。</p>
+            <p>一个路由器有一个WAN接口接到公网，通常四个LAN接口，还有无限接口。四个LAN接口意味着可以有限连接四台设备，这四台设备共享一个网关IP，每个设备的ip不同。</p>
+            <p>
+                如何共享文件：
+                同一私有ip的不同设备来说，第一种，在windows上设置共享文件夹SMB。<br>
+                1. 右键文件夹 → 属性 → 共享 → 高级共享<br>
+                2. 勾选"共享此文件夹"<br>
+                3. 权限 → 添加Everyone → 允许"读取/写入"<br>
+                4. 检查网络路径（形如\\user_name\\file_name<br>
+                5. ping 对应设备ip或ip名看看能不能联通<br>
+                6. win+R，输入\\user_name\\file_name<br>
+                7. 也可以在浏览器中输入\\user_name\\file_name<br>
+                8. 在手机上访问需要先创立一个访问账户<br>
+                9. 用管理员权限打开powershell，创建账户net user {name} {passage} /add<br>
+                10. 用solid explorer新建smb。<br>
+                第二种，在对应文件夹开一个本地服务器py -m http.server 8000，然后访问该服务器。手机也可以访问该服务器。<br>
+                在同一子网中的设备传递速度很快。<br>
+                第三种，FTP服务器。
+                1. 搜索启用或关闭windows功能，<br>
+                展开 → FTP服务器 → 全选<br>
+                展开 → Web管理工具 → IIS管理控制台<br>
+                2. 用filezilla server interface<br>
+            </p> 
+            <p>
+                如何用frp实现内网穿透？<br>
+                1. 有公网ip的服务器（vps）<br>
+                2. <a href="https://github.com/fatedier/frp/releases">下载frp</a><br>
+                3. <br>
+            </p>
+            <p>
+               简单的方式Sakura_frp：
+               1. 注册并实名<a href="https://www.natfrp.com/">sakura_frp</a><br>
+               2. 打开mc，对局域网开放，记下端口号（一般是25565）。<br>
+               3. 用这个端口号开一个隧道。<br>
+               4. TCP和UDP两个隧道区别在于数据传输方式不同，TCP通过更多数据保证了数据稳定性，UDP用较少数据保证速度。<br>
+            </p>
+
+        </div>
+        <div class="box1">
+            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
+        </div>
+    </body>
+
+</html>

@@ -26,7 +26,7 @@
                     查看信息：ffprobe "input.mp4"
                 </li>
                 <li>
-                    放缩：ffmpeg -i "input.mp4" -vf "scale:1920:1080" "output.mp4" //其中input.mp4指向输入文件的路径，output是输出文件的地址、格式和名称。
+                    放缩：ffmpeg -i "input.mp4" -vf "scale=1920:1080" "output.mp4"，其中input.mp4指向输入文件的路径，output是输出文件的地址、格式和名称；如果想要等比例放缩，那么把sclae中的任意一个参数写成-1就好。
                 </li>
                 <li>
                     下载m3u8：ffmpeg -i "xxx.m3u8" "output.mp4"

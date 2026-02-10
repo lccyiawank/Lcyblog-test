@@ -232,7 +232,7 @@ createAndUseBlobUrl(blob, (url) => {
             <p>这一段测试用fetch来fetch某个网页的文本</p>
             <p id="test_text_1"></p>
             <script>
-                fetch('../test_text.txt')
+                fetch('../../test_text.txt')
                 .then(response => {
                 console.log(response.status); // HTTP状态码
                 console.log(response.ok);     // 是否成功（200-299）
