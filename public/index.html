@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>社区系统</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <h1>社区</h1>
+            <div id="userInfo">
+                <!-- 登录状态显示 -->
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div id="loginPrompt" class="login-prompt">
+            <p>请先 <a href="/login.html">登录</a> 或 <a href="/register.html">注册</a></p>
+        </div>
+        
+        <div id="postForm" style="display: none;">
+            <textarea id="postContent" placeholder="分享你的想法..."></textarea>
+            <button onclick="createPost()">发布</button>
+        </div>
+        
+        <div id="posts">
+            <!-- 文章列表 -->
+        </div>
+    </main>
+    
+    <script>
+        const API_BASE = ''
+        let currentUser = null
+        
+        // 检查登录状态
+        async function checkLogin() {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                document.getElementById('loginPrompt').style.display = 'block'
+                document.getElementById('postForm').style.display = 'none'
+                return
+            }
+            
+            try {
+                const res = await fetch('/api/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                
+                if (res.ok) {
+                    currentUser = await res.json()
+                    document.getElementById('loginPrompt').style.display = 'none'
+                    document.getElementById('postForm').style.display = 'block'
+                    document.getElementById('userInfo').innerHTML = `
+                        <span>欢迎，${currentUser.username}</span>
+                        <button onclick="logout()">退出</button>
+                    `
+                    loadPosts()
+                } else {
+                    localStorage.removeItem('token')
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('token')
+            window.location.reload()
+        }
+        
+        // 发布文章
+        async function createPost() {
+            const content = document.getElementById('postContent').value
+            if (!content) return
+            
+            const token = localStorage.getItem('token')
+            
+            try {
+                const res = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                })
+                
+                if (res.ok) {
+                    document.getElementById('postContent').value = ''
+                    loadPosts()
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        
+        // 加载文章列表
+        async function loadPosts() {
+            try {
+                const res = await fetch('/api/posts', {
+                    headers: localStorage.getItem('token') ? {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    } : {}
+                })
+                
+                const posts = await res.json()
+                displayPosts(posts)
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        
+        // 显示文章
+        function displayPosts(posts) {
+            const container = document.getElementById('posts')
+            container.innerHTML = posts.map(post => `
+                <div class="post">
+                    <div class="post-header">
+                        <span class="author">${post.author.username}</span>
+                        <span class="date">${new Date(post.createdAt).toLocaleString()}</span>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-footer">
+                        <button onclick="toggleLike('${post.id}')" class="${post.likedByCurrentUser ? 'liked' : ''}">
+                            ❤️ ${post.likeCount || 0}
+                        </button>
+                        <button onclick="showComments('${post.id}')">
+                            💬 ${post.commentCount || 0}
+                        </button>
+                    </div>
+                    <div id="comments-${post.id}" class="comments"></div>
+                </div>
+            `).join('')
+        }
+        
+        // 点赞/取消点赞
+        async function toggleLike(postId) {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                alert('请先登录')
+                return
+            }
+            
+            try {
+                const res = await fetch(`/api/posts/${postId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                
+                if (res.ok) {
+                    loadPosts()
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        
+        // 显示评论
+        async function showComments(postId) {
+            const commentsDiv = document.getElementById(`comments-${postId}`)
+            
+            if (commentsDiv.style.display === 'block') {
+                commentsDiv.style.display = 'none'
+                return
+            }
+            
+            try {
+                const res = await fetch(`/api/posts/${postId}/comments`)
+                const comments = await res.json()
+                
+                commentsDiv.innerHTML = `
+                    <div class="comment-form">
+                        <textarea id="comment-${postId}" placeholder="写评论..."></textarea>
+                        <button onclick="addComment('${postId}')">发布评论</button>
+                    </div>
+                    ${comments.map(c => `
+                        <div class="comment">
+                            <span class="comment-author">${c.author.username}:</span>
+                            <span class="comment-content">${c.content}</span>
+                        </div>
+                    `).join('')}
+                `
+                commentsDiv.style.display = 'block'
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        
+        // 添加评论
+        async function addComment(postId) {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                alert('请先登录')
+                return
+            }
+            
+            const content = document.getElementById(`comment-${postId}`).value
+            if (!content) return
+            
+            try {
+                const res = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content, parentId: postId })
+                })
+                
+                if (res.ok) {
+                    showComments(postId)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        
+        // 初始化
+        checkLogin()
+    </script>
+</body>
+</html>

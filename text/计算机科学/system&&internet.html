@@ -40,14 +40,15 @@
                 同一私有ip的不同设备来说，第一种，在windows上设置共享文件夹SMB。<br>
                 1. 右键文件夹 → 属性 → 共享 → 高级共享<br>
                 2. 勾选"共享此文件夹"<br>
-                3. 权限 → 添加Everyone → 允许"读取/写入"<br>
+                3. 权限 → 添加Everyone → 允许"读取/写入" → <br>
                 4. 检查网络路径（形如\\user_name\\file_name<br>
                 5. ping 对应设备ip或ip名看看能不能联通<br>
                 6. win+R，输入\\user_name\\file_name<br>
                 7. 也可以在浏览器中输入\\user_name\\file_name<br>
                 8. 在手机上访问需要先创立一个访问账户<br>
                 9. 用管理员权限打开powershell，创建账户net user {name} {passage} /add<br>
-                10. 用solid explorer新建smb。<br>
+                10. 为文件夹"属性"→"安全"→"编辑"→"添加"→输入"{name}"并赋予其权限<br>
+                11. 用solid explorer新建smb。<br>
                 第二种，在对应文件夹开一个本地服务器py -m http.server 8000，然后访问该服务器。手机也可以访问该服务器。<br>
                 在同一子网中的设备传递速度很快。<br>
                 第三种，FTP服务器。
@@ -68,6 +69,55 @@
                2. 打开mc，对局域网开放，记下端口号（一般是25565）。<br>
                3. 用这个端口号开一个隧道。<br>
                4. TCP和UDP两个隧道区别在于数据传输方式不同，TCP通过更多数据保证了数据稳定性，UDP用较少数据保证速度。<br>
+            </p>
+            <p>
+                easytier：
+                打开easytier创建服务器，查看虚拟IP，连接虚拟ip:端口号即可。
+            </p>
+            <p>
+                临时插入一条使用本地服务器的方式：下载python，在对应文件夹输入cmd，在cmd中输入python -m http.server 8000，就能在http://localhost:8000/加载文件，这是出于fetch的安全性考虑的
+                这时候直接方位localhost:8000即可，不需要再在本地打开文件
+                但是浏览器出于安全考虑会禁止访问域外资源，简单的方法是使用代理服务器。第一种是在本地搭一个代理服务器，另一种是使用已有的代理服务器。
+                在本地搭建服务器参考python_server.py，他在端口8888开启一个服务器。
+                例如：<br>
+                const videoUrl = 'https://ok.166.net/gameyw-misc/opd/squash/20210226/134206-krb0sf3j14.mp4';<br>
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/${videoUrl}';
+            </p>
+            <p>
+                什么是DNS：DNS负责把域名转化为对应的公网ip。
+                <br>所以DNS污染就是把域名指定到错误的公网ip，这时候只要直接访问ip即可。
+                <br>用ping example.com查询，但是可能被区域节点CDN影响。
+                <br>用nslookup example.com查询ip，
+                <br>或者用dig example.com查询ip，
+                <br>或者用Resolve-DnsName example.com。
+                <br>不过这种方式有时候会遇到cloudflare的direct ip access not allowed制裁。
+            </p>
+            <p>
+                既然SNI会审查返回的域名，那么在发送请求的时候要求服务器不返回该域名不就好了吗？
+                然而，一个ip地址可能托管了数百个网站，服务器需要知道用户想要访问哪个网站，才能返回正确的网站。因此，https要求证书匹配相同。
+            </p>
+            <p>
+                访问某个域名会依次发生：
+                <br>1. DNS解析域名为IP：优先级依次是浏览器缓存->hosts->DNS缓存->ISP的DNS服务器->..权威服务器
+                <br>2. TCP三次握手：
+                    <li>客户端发送SYN
+                    </li>
+                    <li>服务器恢复SYN+ACK
+                    </li>
+                    <li>客户端发送ACK
+                    </li>
+                <br>3. TLS握手（仅在https下发生）：
+                    <li>ClientHallo</li>
+                    <li>ServerHallo</li>
+                <br>4. 发送http请求
+                <br>5. 接受http响应
+                <br>...
+            </p>
+            <p>主流代理方式有HTTP、SOCKS5、VPN。</p>
+
+
+            <p>
+                这是一条额外的。。。由于OpenSSL的兼容性问题，有些游戏启动时需要禁用其特性，可以写一个简易文件来执行它，或者用cmd设定该变量来启动，即cmd /c "set OPENSSL_ia32cap=:~0x20000000 && file.exe"
             </p>
 
         </div>

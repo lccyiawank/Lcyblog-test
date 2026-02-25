@@ -376,21 +376,44 @@ createAndUseBlobUrl(blob, (url) => {
                 
 
             </script>
+        
+
+        <p>下载<a href="https://nodejs.org">node</a>，即可在非html环境运行js，即在cmd/powershell中运行node app.js。
+        这个js可以是一个后端服务器用于转接其他的应用。<pre><code>
+        //app.js
+            const express = require('express')
+            const express = require('node-fetch')
+            const express = require('fs')
+            
+            const app = express()
+            app.use(express.json());
+            // 托管文件夹
+            app.use(express.static('public'))
+            // 添加首页路由
+            app.get('/', (req, res) => {
+                res.sendFile(__dirname, 'index.html')
+            })
+            // 监听3000端口
+            app.listen(3000,()=>{
+                console.log('welcome')
+            })
+        </code></pre>
+        在部署这个js的时候，在当前文件夹打开cmd/powershell，输入
+        <code>
+            npm init
+            npm express
+            npm node-fetch
+            node app.js
+        </code></p>
+        <p>相较于py -m http.server，node app.js创建了一个动态服务器。</p>
 
             <p>
-                临时插入一条使用本地服务器的方式：下载python，在对应文件夹输入cmd，在cmd中输入python -m http.server 8000，就能在http://localhost:8000/加载文件，这是出于fetch的安全性考虑的
-                这时候直接方位localhost:8000即可，不需要再在本地打开文件
-                但是浏览器出于安全考虑会禁止访问域外资源，简单的方法是使用代理服务器。第一种是在本地搭一个代理服务器，另一种是使用已有的代理服务器。
-                在本地搭建服务器参考python_server.py，他在端口8888开启一个服务器。
-                例如：<br>
-                const videoUrl = 'https://ok.166.net/gameyw-misc/opd/squash/20210226/134206-krb0sf3j14.mp4';<br>
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/${videoUrl}';
+                我曾经用cloudflare代理我的网站，使我的网站会自动跳转到另一个域名，现在我已经关掉了这个跳转，所以你们直接访问就可以访问，但是我仍然会跳转到那个网站，这是因为浏览器缓存问题，在本网站F12->network->disable cache->ctrl+shift+R强制刷新即可。
             </p>
 
 
         </div>
         <div class="box1">
-            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
         </div>
     </body>
 </html>

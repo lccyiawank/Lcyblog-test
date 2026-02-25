@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>登录</h2>
+        <form onsubmit="login(event)">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">登录</button>
+            <p>没有账号？ <a href="/register.html">去注册</a></p>
+        </form>
+    </div>
+    
+    <script>
+        async function login(event) {
+            event.preventDefault()
+            
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+            
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                
+                const data = await res.json()
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token)
+                    window.location.href = '/'
+                } else {
+                    alert(data.error || '登录失败')
+                }
+            } catch (err) {
+                alert('网络错误')
+            }
+        }
+    </script>
+</body>
+</html>

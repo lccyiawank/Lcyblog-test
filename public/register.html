@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>注册</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>注册</h2>
+        <form onsubmit="register(event)">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label>邮箱</label>
+                <input type="email" id="email">
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">注册</button>
+            <p>已有账号？ <a href="/login.html">去登录</a></p>
+        </form>
+    </div>
+    
+    <script>
+        async function register(event) {
+            event.preventDefault()
+            
+            const username = document.getElementById('username').value
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                })
+                
+                const data = await res.json()
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token)
+                    window.location.href = '/'
+                } else {
+                    alert(data.error || '注册失败')
+                }
+            } catch (err) {
+                alert('网络错误')
+            }
+        }
+    </script>
+</body>
+</html>

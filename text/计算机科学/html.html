@@ -7,29 +7,316 @@
         <link rel="icon" href="../../image/390742.png" />
         <link rel="stylesheet" href="../../init.css">
         <title>刘超轶的博客 计算机科学</title>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script><!--引入Vue-->
         <style>
+            * {
+    box-sizing: border-box;
+}
+.mobile-menu-wrapper {
+    display: flex;
+    position: fixed;
+    top: -.0625rem;
+    left: 0;
+    flex-direction: column;
+    z-index: 256;
+    width: 100%;
+}
+    .flex-horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+    .center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+    .avatar-wrapper{
+    backdrop-filter: brightness(.8) saturate(.8);
+    -webkit-backdrop-filter: brightness(.95) saturate(.8);
+    transition: border .375s ease-in-out;
+    border: .1rem #5c606e solid;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    padding: .1rem;
+}
+.mobile-menu-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color .375s ease-in-out;
+    background-color: var(--color-mobile-nav-background,rgba(255, 255, 255, 0.84706));
+    padding: .5rem 1rem;
+}
+.shadow-far {
+    box-shadow: .2rem .2rem .5rem rgba(53, 117, 182, .17);
+    box-shadow: .2rem .2rem .5rem hsla(210, 55%, 46%, .17);
+}
+.acrylic {
+    backdrop-filter: blur(.75rem);
+    -webkit-backdrop-filter: blur(.75rem);
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAK8AQMAAAA3dP4AAAAABlBMVEXI3f/////3Ar4dAAAAAXRSTlMlC+IMIQAAAAFiS0dEAf8CLd4AAABTSURBVBgZ7cExAQAAAMIg+6deDB9gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3ATzXAAB5UTycAAAAABJRU5ErkJggg==);
+    background-position: center;
+    background-repeat: repeat;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+#main-view {
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        padding: 3.5rem 1rem 0;
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+#main-view {
+    display: flex;
+    grid-area: main;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    transition: background-color .375s ease-in-out;
+    background-color: #edf4fb;
+    overflow-y: auto;
+}
+.rounded-large {
+    border-radius: 2rem;
+    -webkit-border-radius: 2rem;
+}
+.avatar-wrapper img {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    width: 2rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* 菜单按钮样式 - 使用 fixed 定位，不受父容器影响 */
+.menu-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    height: 1.2rem;
+}
+
+.menu-line{
+    display: block;
+    transition: all .375s cubic-bezier(.85,-.06,.22,1.26);
+    background-color: #2f2f2f;
+    width: 1.5rem;
+    height: .125rem;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 三条横线变 X 的动画 */
+.menu-button.active .menu-line.start{    
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-button.active .menu-line.middle{
+    transform: scale3d(0,0,0);
+    opacity: 0
+}
+
+.menu-button.active .menu-line.end{
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.menu-dropdown {
+    display: flex;
+    flex-direction: column;
+    filter: drop-shadow(.1rem .1rem .2rem rgba(0, 0, 0, .12));
+    -webkit-filter: drop-shadow(.1rem .1rem .2rem rgba(0, 0, 0, .12));
+    transition: background-color .375s ease-in-out;
+    box-shadow: 0 0 0 200vh rgba(0, 0, 0, .1);
+    background-color: rgba(255,255,255,.70196);
+}
+
+.menu-dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.menu-dropdown li {
+    padding: 8px 20px;
+}
+
+.menu-dropdown li:hover {
+    background: #f5f5f5;
+}
+
+.menu-dropdown a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+/* 遮罩层 */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 10000;
+}
+
+/* 淡入淡出动画 */
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
+
+.black-mask {
+    background-color: black;        /* 黑色遮罩 */
+    color: transparent;             /* 文字透明，只显示黑色背景 */
+    transition: all 0.3s ease;      /* 平滑过渡 */
+    cursor: pointer;                /* 鼠标变成小手 */
+    padding: 0 4px;                 /* 加点内边距更好看 */
+    border-radius: 4px;             /* 稍微圆角 */
+}
+
+.black-mask:hover {
+    background-color: transparent;  /* 悬停时背景透明 */
+    color: inherit;                 /* 文字恢复原来颜色 */
+}
+
         </style>
     </head>
     <body class="background1">
-        <div class="box1">
-            <h1>html</h1>
-        </div>
-        <div class="box2">
-            <p>浏览器接受html文件输入，并计算各种数据、渲染画面。</p>
-            <p>html语言由标签和内容组成，标签分头尾，内容在中间。在标签头中可以增加各种参数。</p>
-            <p>最简单的html由&lt;html&gt;、&lt;head&gt;、&lt;body&gt;、&lt;div&gt;、&lt;p&gt;组成。</p>
-            <p>想要什么效果尽管搜索好了。</p>
-            <p>记得使用相对路径，这样就方便了本地和远程同步，办法就是给自己的href加一个./，如果是回到上一级，用../../这样</p>
-            <ul>
-                <p>参考</p>
-                <li>
-                    <a href="https://www.bilibili.com/video/BV17S4y1P7qH">十分钟学会写网页【编程前端入门】</a>
-                </li>
-            </ul>
-        </div>
-        <div class="box1">
-            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
-        </div>
-    </body>
+    <div id="ROOT" class="acrylic"> <!--根节点-->
+    <!--设计为手机端的头栏-->
+    <div class="mobile-menu-wrapper">
+    <div class="mobile-menu-bar shadow-far acrylic">
+        <div class="flex-horizontal"> 
+             <a href="/" class="avatar-wrapper center">
+            <img src="../../image/arona_icon-FqVudqPo.webp" alt="Arona">
+             </a>
+            <div class="center">
+            <p>html</p>
+             </div></div>
+        <div id="menu"></div>
+        <script>
+const { createApp } = Vue
 
+createApp({
+    data() {
+        return {
+            isOpen: false,
+            menuItems: [
+                { text: '首页', link: '/' },
+                { text: '计算机科学', link: '/计算机科学.html' },
+            ]
+        }
+    },
+    methods: {
+        toggleMenu() {
+            this.isOpen = !this.isOpen
+        },
+        closeMenu() {
+            this.isOpen = false
+        }
+    },
+    template: `
+            <div 
+                class="menu-button" 
+                :class="{ active: isOpen }"
+                @click="toggleMenu"                
+                role="button"
+                tabindex="0"
+            >
+                <span class="menu-line start"></span>
+                <span class="menu-line middle"></span>
+                <span class="menu-line end"></span>
+            </div>
+            <div class="menu-dropdown" v-if="isOpen">
+                <ul>
+                    <li v-for="item in menuItems" :key="item.text">
+                            <a :href="item.link" @click="closeMenu">{{ item.text }}</a>
+                    </li>
+                </ul>
+            </div>
+    `
+}).mount('#menu')
+</script>
+    </div>
+    </div>
+    <!--菜单-->
+
+
+    <div id="main-view" class="rounded-large">
+        <p>浏览器接受html文件输入，并计算各种数据、渲染画面。</p>
+        <p>html语言由标签和内容组成，标签分头尾，内容在中间。在标签头中可以增加各种参数。</p>
+        <p>最简单的html由&lt;html&gt;、&lt;head&gt;、&lt;body&gt;、&lt;div&gt;、&lt;p&gt;组成。</p>
+        <p>想要什么效果尽管搜索<span class="black-mask">偷</span>好了。</p>
+        <p>记得使用相对路径，这样就方便了本地和远程同步，办法就是给自己的href加一个./，如果是回到上一级，用../../这样</p>
+        <p>在css中设置.avatar-wrapper img的意义是选择所有class="avatar-wrapper"的元素中的img元素并应用。当然还有.black-mask:hover（当鼠标悬停在这个class的div上时会发生...）</p>
+        <p>border-radius: 50%是制作圆形图片的主要方式，让这个元素的边框圆角的弧度，达到它自身宽度和高度的一半。为了设置为正圆，还要有width:2rem和height:2rem，2rem是相对于根元素html字体大小的单位，一般默认字体是16px，2rem是32px。</p>
+        <p>现代网站支持vue等方式实现动态html网站（SPA），但是这里还在施工中，所以你会见到许多bug。</p>
+        <p>构造SPA的方式有一，引入vue；二，全部改成SPA。区别在于，前者是在html的基础上增强一些动态功能，后者的html只是一个壳子，全部由JS渲染。</p>
+        <p>引入Vue的方法是在head头里添加一行（F12，参见本页面）；完全构造成SPA的方法是<br>
+//bash<br>
+# 创建新项目，取名 vue-spa-for-html<br>
+vue create vue-spa-for-html<br>
+# 进入项目目录<br>
+cd vue-spa-for-html<br>
+npm run build<br>
+</p>
+        <p>引入Vue的好处在于，Vue是一个配置好的工具，方便合作使用。否则你自己写js代码也是一样的。用JS获取该元素，在点击时触发加一的函数。</p>
+        <div id="app">
+            <p>{{ message }}</p>
+            <button @click="count++">点击了{{ count }}次</button>
+        </div>
+        <script>
+            Vue.createApp({
+                data() {
+                return {
+                    message: '这是一个带 Vue 的点击函数',
+                    count: 0
+                }
+            }}).mount('#app')
+        </script>
+        <ul>
+            <p>参考</p>
+            <li>
+                <a href="https://www.bilibili.com/video/BV17S4y1P7qH">十分钟学会写网页【编程前端入门】</a>
+            </li>
+        </ul>
+    </div>
+    <div class="box1">
+        <span>网站的CSS来源于<a href="https://blue-archive.io/">碧蓝档案剧情站</a></span>
+    </div><!--底端-->
+    </div><!--根节点-->
+    <script>
+      var appElement = document.getElementById("ROOT");
+      var quicklink = window.quicklink;
+      if (appElement && quicklink) {
+        quicklink.listen({
+          el: appElement,
+        });
+      }
+    </script>
+
+    </body>
 </html>
