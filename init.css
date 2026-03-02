@@ -2,12 +2,21 @@
     background-color: #f1f1f1;
     text-align: center;
     padding: 40px;
+    width: 100%;
+      /* 核心属性：允许长单词内换行 */
+  overflow-wrap: break-word;
+  /* 可选的备选方案，用于更广泛的兼容性 */
+  word-wrap: break-word; /* overflow-wrap 的旧名称 */
 }
     .box2{
     width: auto;
     margin: auto 200px;
     padding: 20px;
     line-height: 1.7;
+      /* 核心属性：允许长单词内换行 */
+  overflow-wrap: break-word;
+  /* 可选的备选方案，用于更广泛的兼容性 */
+  word-wrap: break-word; /* overflow-wrap 的旧名称 */
 }
     .background1 {
     background-image: url('image/1245646.jpg');

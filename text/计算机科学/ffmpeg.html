@@ -29,7 +29,83 @@
                     放缩：ffmpeg -i "input.mp4" -vf "scale=1920:1080" "output.mp4"，其中input.mp4指向输入文件的路径，output是输出文件的地址、格式和名称；如果想要等比例放缩，那么把sclae中的任意一个参数写成-1就好。
                 </li>
                 <li>
-                    下载m3u8：ffmpeg -i "xxx.m3u8" "output.mp4"
+                    下载m3u8：ffmpeg -i "xxx.m3u8" "output.mp4"<br>
+                    m3u8是流媒体结构，由一个m3u8头文件和多个fs视频文件组成，其中m3u8文件包含了fs文件的播放顺序。m3u8文件的工作原理如下：<br>
+                    <pre><code>// 1. 先下载播放列表
+fetch('video.m3u8') → 获取文本文件（几KB）
+
+// 2. 解析列表，获取所有片段地址
+const segments = ['segment1.ts', 'segment2.ts', 'segment3.ts']
+
+// 3. 依次下载片段
+for (let seg of segments) {
+    fetch(seg) → 下载视频片段（每个几MB）
+    // 边下载边播放
+}
+
+// 4. 所有片段拼接成完整视频</code></pre><br>
+<p>一个简单的下载方式是运用下载工具下载。例如：
+    <pre><code>使用 yt-dlp
+bash
+# 用python商店安装 yt-dlp
+pip install yt-dlp
+
+# 下载B站视频
+yt-dlp https://www.bilibili.com/video/BV1xx411c7mD
+# 如果无法识别指令，是因为没有添加到path中
+python -m yt_dlp https://www.bilibili.com/video/BV1yLUPBBEgZ
+
+# （可选）添加路径：查找路径（这个路径受保护，所以不会显示）
+python -c "import yt_dlp; print(yt_dlp.__file__)"
+# 然后在系统变量中添加这个路径
+AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\Scripts
+
+# 列出所有可用格式
+yt-dlp -F https://www.bilibili.com/video/BV1xx411c7mD
+
+# 下载指定格式
+yt-dlp -f 80 https://www.bilibili.com/video/BV1xx411c7mD
+
+# 下载弹幕和字幕
+yt-dlp --write-subs --write-auto-subs https://www.bilibili.com/video/BV1xx411c7mD</code></pre>
+</p>
+<p>无法播放视频请用ffprobe查看视频格式是否支持，bilibili采用HEVC编码。请下载potplay
+    <pre><code>winget install Daum.PotPlayer</code></pre>
+</p>
+<p>通常来说，访问图床或视频的请求被拒接是因为限制了请求头（只允许本网站请求），所以只需要更改请求头请求即可。<br>
+在F12/Network中用filter筛选出playurl(biliblii)、m3u8、mp4等，元素。
+例如：<a href="https://api.bilibili.com/x/player/playurl?avid=288812189&cid=288191933&qn=80&type=&otype=json">示例元素</a><br>
+在该结构中的data找到具体视频连接（<a href="https://upos-sz-estgoss.bilivideo.com/upgcxcode/33/19/288191933/288191933_nb2-1-16.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M=&oi=1851217749&trid=e7ac2a9db17a4624b4f0dc662ba5753u&gen=playurlv3&os=estgoss&og=ali&platform=pc&mid=0&nbs=1&uipk=5&deadline=1772105024&upsig=139fe22e271bd4a1f02426d438698314&uparams=e,oi,trid,gen,os,og,platform,mid,nbs,uipk,deadline&bvc=vod&nettype=0&bw=299963&build=0&dl=0&f=u_0_0&qn_dyeid=5387d8003cf03fd3001ea36869a01120&agrr=1&buvid=&orderid=0,3）">示例链接</a>），更改请求头来访问它。<br>
+如果你的cmd不支持换行操作，请写入一个bat文件来执行。<pre><code>curl "视频连接" ^
+  -H "accept: */*" ^
+  -H "accept-language: zh-CN,zh;q=0.9" ^
+  -H "origin: https://www.bilibili.com" ^
+  -H "referer: https://www.bilibili.com" ^
+  -H "sec-ch-ua: \"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"" ^
+  -H "sec-ch-ua-mobile: ?0" ^
+  -H "sec-ch-ua-platform: \"Windows\"" ^
+  -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" ^
+  --output "bilibili_video.mp4"
+  </code></pre>
+</p>
+<p>前面说了，图片也可以。例如：<pre><code>@echo off
+chcp 65001 >nul
+echo 开始下载图片...
+
+curl -e "请求头网站" ^
+     -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" ^
+     -o "output.jpg" ^
+     "图片链接"
+
+if %errorlevel% equ 0 (
+    echo 下载成功！文件保存为：output.jpg
+) else (
+    echo 下载失败，错误代码：%errorlevel%
+)
+
+pause
+</code></pre></p>
+<p>如果下载的视频是英文看不懂，可以用html挂到谷歌上用谷歌翻译。</p>
                 </li>
                 <li>
                     参考：

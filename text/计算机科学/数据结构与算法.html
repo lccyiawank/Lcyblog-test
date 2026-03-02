@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <base target="_blank">
+        <link rel="icon" href="../../image/390742.png" />
+        <link rel="stylesheet" href="../../init.css">
+        <title>刘超轶的博客 计算机科学</title>
+        <!--引入Vue-->
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+                <!--引入MathJax-->
+<!-- 1. 先定义 MathJax 配置 -->
+<script>
+ MathJax = {
+     tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+     },
+ };
+</script>
+<!-- 2. 再加载 polyfill（如果需要） -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<!-- 3. 最后加载 MathJax -->
+<script id="MathJax-script" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+        <style>
+</style>
+    </head>
+    <body>
+        <div class="box1">
+            <h1>数据结构与算法</h1>
+        </div>
+        <div class="box2">
+            <ul>
+                <h2>数据结构</h2>
+                <li>
+                    数组array：就是一个普通的数组。
+                </li>
+                <li>
+                    链表listnode：链表是由一系列结点node链接而成，所谓结点，即typedef struct node{data;struct node* next;}node，由数据和一个指向下一个结点的指针构成。这种结构便于增删，但是查找的效率同数列一样。
+                </li>
+                <li>
+                    哈希表hashtable：
+                    哈希表的结构由哈希结点hashnode和哈希图hashmap构成，哈希结点是一个链表结点node，包含一个键key、一个值value和一个指向下一个哈希结点的指针hashnode*，哈希图就是num个哈希链表（称作桶bucket）hashnode* bucket[num] or hashnode** bucket，bucket存储num个哈希链表的头指针。初始化哈希表就是根据某种哈希函数hash()[例如最简单的哈希函数是通过模mod求余，如以11为模，就是有11个哈希链表的桶]算出桶bucket的数量num，构造num个只有头指针（该指针的值是null，以指示该链表的末尾）的链表。当插入数据时，先根据哈希函数hash()计算哈希值，找到桶对应的链表，把这个数据以哈希结点的形式（用malloc动态创建）头插入链表，当查找哈希表中的数据时，先根据哈希函数hash()计算哈希值，定位到桶对应的链表，一一比对键key来获取值value。哈希表适合查找，最好时间复杂度是O(1)，即所有根据哈希函数计算，在每个桶中只有一个数据，哈希链表长度为1。最坏是O(n)，即所有数据都塞在同一个链表。<br>
+在leetcode的第一题two sums（两数之和）中使用哈希表，即在给定数组中有一对数据之和等于目标值target，暴力解是使用两个for遍历数组（时间复杂度O(n^2)），使用哈希表的时间复杂度为O(n)[考虑构造哈希表，其实是2n]，只需遍历一次，查找另一个数target-num[i]则使用哈希表O(1)。伪代码如下：
+<pre><code>
+定义哈希结点和哈希表
+初始化哈希表
+将给定数组塞入哈希表{
+计算哈希值
+尾插
+}
+遍历给定数组{
+index=计算哈希值(target-num[i])
+如果找不到{i++}
+如果找到{return ……}
+}</code></pre>
+
+如你所见，哈希表的全部精华在于计算哈希值，使得每一个链表长度又平均又短。把代码的结构化做好，替换hash函数即可（）。现代已有封装好的哈希函数。
+                </li>
+                <li>二叉树：二叉树是一个特殊的链表，有两个指向下一个结点的指针typedef struct tree{data;struct tree* next1;struct tree* next2}tree，二叉树的查找效率是\( \log_2 n \)，这就是说在0~100中猜一个数，只需要告诉我猜的数是大了还是小了，就能以\(log_2 100=7\)次算出这个数，所以二叉树在构造时要求按顺序构造这个树状结构。
+
+                </li>
+            </ul>
+        </div>
+        <div class="box1">
+            <a href="https://wmyblog.site/">王孟源的镜像博客</p>
+        </div>
+    </body>
+
+</html>
